@@ -96,7 +96,7 @@
         foreach ($chunkPostfields as &$value) {
             echo $i . " - " . getCurrentDateTimeOtto();
             echo "<br>";
-            $spResult = uploadProducts($url, $accessToken, $value, 'product_' . $i);	
+            $spResult = uploadProducts($url, $accessToken, $value, 'product_' . $i);
 
             $uploadIds .= $spResult["links"][0]["href"] . "\r\n";
 
@@ -314,7 +314,9 @@
     * Format:
     * SKU [0];EAN [1];Herstellernr [2];Marke angepasst [3];Bezeichnung [4];
     * Beschreibung [5];Bilddateiname [6];Lieferzeit [7];Preis [8];Grundeinheit [9];
-    * Grundmenge [10];Kategorie [11];Marke Original [12]; VPE [13]
+    * Grundmenge [10];Kategorie [11];Marke Original [12]; VPE [13]; Farbe [14];
+    * Größe [15]; Norm [16]; Material [17]; Produktart [18]; Ausführung [19];
+    * Zertifikat [20]; Gefahrgut [21]
     *
     * @input    String  Csv line in the correct format (generated via fgetcsv)
     * @return   String  Json string for product data uploads
@@ -335,9 +337,27 @@
         }
 
         $vpeString = "";
+        //Support for multiple units in one package
         if($csvData[13] != null && $csvData[13] != ""){
             $vpeString = $csvData[13]. 'er Pack ';
         }
+
+        $bulletpoints = "  ";
+        //Bulletpoints
+        for($i = 14; $i < 20; $i++){
+            if($csvData[$i] != null && $csvData[$i] != ""){
+                $bulletpoints .= $csvData[$i] . ' | ';
+            }
+        }
+        //Remove last 2 chars from bulletpoints
+        $bulletpoints = substr_replace($bulletpoints, "", -2);
+
+        //Is the product dangerous?
+        $dangerGood = "Produkt fällt nicht unter die Gefahrgutvorschriften.";
+        if($csvData[21] == "1"){
+            $dangerGood = "Produkt fällt unter die Gefahrgutvorschriften.";
+        }
+        
         
         //Generate json
         $json = 
@@ -366,11 +386,12 @@
                 "description":"' . $csvData[5] . '",
                 "bulletPoints":[
                     "' . $csvData[12] . '", 
-                    "' . $vpeString . '"
+                    "' . $vpeString . '",
+                    "' . $bulletpoints . '"
                 ],
                 "attributes":[{
                     "name":"Relevanz Gefahrgut",
-                    "values":["Produkt fällt nicht unter die Gefahrgutvorschriften."]
+                    "values":["' . $dangerGood . '"]
                 }]
             },
             "mediaAssets":[{
