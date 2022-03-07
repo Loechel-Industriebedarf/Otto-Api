@@ -1,0 +1,12 @@
+
+inc/config.php
+inc/json/
+uploads/
+inc/uploadId.txt
+inc/swagger.json
+inc/quantityErrors.csv
+inc/productErrors.csv
+inc/log.log
+inc/lastDate.txt
+inc/categories.json
+inc/brands.json
