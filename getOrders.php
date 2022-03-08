@@ -65,7 +65,7 @@
     * V-Firma1 [6]; V-Strasse [7]; V-Firma2 [8]; V-PLZ [9]; V-Ort [10]; V-LKZ [11]; 
     * R-Firma1 [12]; R-Strasse [13]; R-Firma2 [14]; R-PLZ [15]; R-Ort [16]; R-LKZ [17]; 
     * Telefonnr [18]; Zahlungsart [19]; Zahlungsnr [20]; Porto [21]; Nebenkosten [22];
-    * LastModified [23]
+    * LastModified [23]; PositionItemId [24]
     */
     function convertOrdersToCsv($orders){
         if(!isset($orders["resources"][0])){
@@ -80,7 +80,7 @@
                     $csv .= $value["orderDate"] . ';';
                     $csv .= '' . ';'; //Mail does not exist
                     $csv .= $item["product"]["sku"] . ';';
-                    $csv .= '' . ';'; //MENGE???
+                    $csv .= '1' . ';'; //MENGE???
                     $csv .= $item["itemValueGrossPrice"]["amount"] . ';';
                     $csv .= $value["deliveryAddress"]["firstName"] . " " . $value["deliveryAddress"]["lastName"] . ';';
                     $csv .= $value["deliveryAddress"]["street"] . " " . $value["deliveryAddress"]["houseNumber"] . ';';
@@ -99,7 +99,8 @@
                     $csv .= $value["salesOrderId"] . ';';
                     $csv .= $value["initialDeliveryFees"][0]["deliveryFeeAmount"]["amount"] . ';';
                     $csv .= '0' . ';'; //TODO Nebenkosten
-                    $csv .= $value["lastModifiedDate"] . ';' . PHP_EOL;
+                    $csv .= $value["lastModifiedDate"] . ';';
+                    $csv .= $item["positionItemId"] . ';' . PHP_EOL;
                 }    
             }
 
@@ -110,7 +111,7 @@
 
 
     function generateHeadline(){
-        return 'Bestellnr [0]; Bestelldatum [1]; E-Mail [2]; Artikelnr [3]; Menge[4]; Preis [5]; V-Firma1 [6]; V-Strasse [7]; V-Firma2 [8]; V-PLZ [9]; V-Ort [10]; V-LKZ [11]; L-Firma1 [12]; L-Strasse [13]; L-Firma2 [14]; L-PLZ [15]; L-Ort [16]; L-LKZ [17]; Telefonnr [18]; Zahlungsart [19]; Zahlungsnr [20]; Porto [21]; Nebenkosten [22]';
+        return 'Bestellnr [0]; Bestelldatum [1]; E-Mail [2]; Artikelnr [3]; Menge[4]; Preis [5]; V-Firma1 [6]; V-Strasse [7]; V-Firma2 [8]; V-PLZ [9]; V-Ort [10]; V-LKZ [11]; L-Firma1 [12]; L-Strasse [13]; L-Firma2 [14]; L-PLZ [15]; L-Ort [16]; L-LKZ [17]; Telefonnr [18]; Zahlungsart [19]; Zahlungsnr [20]; Porto [21]; Nebenkosten [22]; Last Modified [23]; PositionItemId [24]';
     }
 
 

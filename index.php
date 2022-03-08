@@ -9,7 +9,6 @@
 <br><br>
 <br><br>
 <br><br>
-<br><br>
 
 
 
@@ -27,8 +26,20 @@
 <br><br>
 <br><br>
 <br><br>
+
+<form action="postTrackingData.php" method="post" enctype="multipart/form-data">
+    Datei mit Trackingnummern auswählen
+    <input type="file" name="fileToUpload" id="fileToUpload">
+    <input type="hidden" name="uploadProducts">
+    <input type="submit" value="Tracking-Upload starten" name="submit">
+</form>
+
 <br><br>
 <br><br>
+<br><br>
+<br><br>
+<br><br>
+
 
 
 <a href="getAllBrands.php"><button>Markenliste anzeigen und abspeichern</button></a><br><br>

@@ -263,38 +263,7 @@
 
 
 
-    /*
-    * Formats the array as json string and saves the json string to disk (debug purposes)
-    * Yes, this function is stupid and there is probably a better solution. But atm I can't do it better.
-    *
-    * @input    Array   Json array with product/quantity data
-    * @input    String  String that should be included in the json filename
-    * @return   String  Json string
-    */
-    function JSONfyPostfields($postfields, $filename){
-        //Open json
-        $json = '[';
-        //Fill json with data from array
-        foreach ($postfields as &$value) {
-            $json .= $value . ',';
-        }
-        //Remove last , from json	
-        $json = substr_replace($json, "", -1);
-        //Close json
-        $json .= ']';
 
-
-        $datePath =  'inc/json/' . date("Y-m-d");
-        //If directory does not already exist, create it (file_put_contents does not create directories itself)
-        if (!is_dir($datePath)) {
-            mkdir($datePath);
-          }
-        $file =  $datePath . '/' . date("H-i-s") . '___' . $filename . '.json';
-        //Write upload id to file
-        file_put_contents($file, $json);
-
-        return $json;
-    }
 
 
 
