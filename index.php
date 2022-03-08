@@ -34,4 +34,5 @@
 <a href="getAllBrands.php"><button>Markenliste anzeigen und abspeichern</button></a><br><br>
 <a href="getAllCategories.php"><button>Kategorienliste anzeigen und abspeichern</button></a><br><br>
 <a href="getSingleProduct.php"><button>Informationen zu einem Produkt anzeigen</button></a><br><br>
-<a href="getOrders.php"><button>Bestellabholung testen</button></a><br><br>
+<a href="getOrders.php"><button>Bestellabholung testen</button></a><br><br><br><br><br><br>
+<a href="generateTestOrders.php"><button>Testbestellungen generieren</button></a><br><br>

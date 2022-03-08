@@ -354,7 +354,7 @@
 
         //Is the product dangerous?
         $dangerGood = "Produkt fällt nicht unter die Gefahrgutvorschriften.";
-        if($csvData[21] == "1"){
+        if($csvData[21] != null && $csvData[21] != ""){
             $dangerGood = "Produkt fällt unter die Gefahrgutvorschriften.";
         }
         
