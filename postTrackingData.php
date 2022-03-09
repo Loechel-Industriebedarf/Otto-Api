@@ -1,19 +1,28 @@
 <?php
     require_once 'inc/config.php';
 
-    $postfields = readShipmentsFromCsv("");
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+    // Check if image file is a actual image or fake image
+    if(isset($_POST["submit"])) {
+        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+            $filename = htmlspecialchars(basename( $_FILES["fileToUpload"]["name"]));
+            echo "Die Datei ". $filename . " wurde hochgeladen!<br><br>";
 
-    $shipments = createNewShipments($url, $accessToken, $postfields);
+            $postfields = readShipmentsFromCsv($target_file);    
 
-    logMe($shipments);
+            $shipments = createNewShipments($url, $accessToken, $postfields);
 
-    /*
-    $lastShipments = getTodaysShipments($url, $accessToken);
-    logMe($lastShipments);
-    */
+            logMe($shipments);
+            if(isset($shipments["errors"])){
+                logMe($postfields);
+            } 
 
-
-
+            logMe(getTodaysShipments($url, $accessToken));
+          } else {
+            echo "Fehler beim Upload...";
+          }
+    }
 
 
 
@@ -54,11 +63,24 @@
 
 
 
-
+    /*
+    * Format:
+    * Carrier [0]; TrackingNumber[1]; PositionItemId [2]; SalesOrderId[3]
+    */
     function readShipmentsFromCsv($csvPath){
         $postfields = array();
-        array_push($postfields, generateShipmentJson("DHL", "123456", "1111", "22222"));
-        array_push($postfields, generateShipmentJson("DHL", "1234567", "1111222", "222223333"));
+
+        if (($handle = fopen($csvPath, "r")) !== FALSE) {
+            fgetcsv($handle); //Skip first line
+            while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
+                echo $data[0] . ";" . $data[1] . ';' . $data[2] . ';' . $data[3];
+
+                array_push($postfields, generateShipmentJson($data[0], $data[1], $data[2], $data[3]));
+            }
+            fclose($handle);
+        } else {
+            echo "Fehler beim Lesen der Datei...";
+        } 
 
         return $postfields;
     }
