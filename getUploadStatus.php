@@ -29,7 +29,9 @@
             echo "</pre>";
             */
             foreach($utaskResult["results"] as &$value){
-                $csv .= $value["variation"] . ';' .  $value["errors"][0]["code"] . ';' .  $value["errors"][0]["title"] . ';' .  $value["errors"][0]["jsonPath"] . PHP_EOL;
+                if(isset($value["errors"])){
+                    $csv .= $value["variation"] . ';' .  $value["errors"][0]["code"] . ';' .  $value["errors"][0]["title"] . ';' .  $value["errors"][0]["jsonPath"] . PHP_EOL;
+                }  
             }
             
             $utaskResult = getUpdateTasks($url, $accessToken, $line . '/succeeded');
@@ -46,7 +48,9 @@
             echo "</pre>";
             */
             foreach($utaskResult["results"] as &$value){
-                $csv .= $value["variation"] . ';' .  $value["errors"][0]["code"] . ';' .  $value["errors"][0]["title"] . ';' .  $value["errors"][0]["jsonPath"] . PHP_EOL;
+                if(isset($value["errors"])){
+                    $csv .= $value["variation"] . ';' .  $value["errors"][0]["code"] . ';' .  $value["errors"][0]["title"] . ';' .  $value["errors"][0]["jsonPath"] . PHP_EOL;
+                }
             }
 
             echo "<br><br>" . nl2br($csv);

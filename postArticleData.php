@@ -285,7 +285,7 @@
     * Beschreibung [5];Bilddateiname [6];Lieferzeit [7];Preis [8];Grundeinheit [9];
     * Grundmenge [10];Kategorie [11];Marke Original [12]; VPE [13]; Farbe [14];
     * Größe [15]; Norm [16]; Material [17]; Produktart [18]; Ausführung [19];
-    * Zertifikat [20]; Gefahrgut [21]
+    * Zertifikat [20]; Gefahrgut [21]; MOIN [22]
     *
     * @input    String  Csv line in the correct format (generated via fgetcsv)
     * @return   String  Json string for product data uploads
@@ -338,7 +338,7 @@
             "upc":"",
             "pzn":"0",
             "mpn":"' . $csvData[2] . '",
-            "moin":"",
+            "moin":"' . $csvData[22] . '",
             "offeringStartDate":"1970-01-01T00:00:00.000Z",
             "releaseDate":"1970-01-01T00:00:00.000Z",
             "productDescription":{

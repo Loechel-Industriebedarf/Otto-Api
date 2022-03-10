@@ -40,10 +40,20 @@
 <br><br>
 <br><br>
 
+<a href="getRestrictedProducts.php"><button>RESTRICTED Produkte prüfen</button></a><br><br>
+
+<br><br>
+<br><br>
+
+
 
 
 <a href="getAllBrands.php"><button>Markenliste anzeigen und abspeichern</button></a><br><br>
 <a href="getAllCategories.php"><button>Kategorienliste anzeigen und abspeichern</button></a><br><br>
-<a href="getSingleProduct.php"><button>Informationen zu einem Produkt anzeigen</button></a><br><br>
+<form action="getSingleProduct.php" method="get">
+    Sku?
+    <input type="text" name="sku" id="sku">
+    <input type="submit" value="Informationen zu einem Produkt anzeigen" name="submit">
+</form><a href="getSingleProduct.php">
 <a href="getOrders.php"><button>Bestellabholung testen</button></a><br><br><br><br><br><br>
 <a href="generateTestOrders.php"><button>Testbestellungen generieren</button></a><br><br>

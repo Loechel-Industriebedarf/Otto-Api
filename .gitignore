@@ -10,3 +10,4 @@ inc/log.log
 inc/lastDate.txt
 inc/categories.json
 inc/brands.json
+inc/restricted.csv
