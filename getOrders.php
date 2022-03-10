@@ -76,12 +76,28 @@
 
             foreach($orders["resources"] as &$value){
                 foreach($value["positionItems"] as &$item){
+                    $quantity = 1;
+                    $price = $item["itemValueGrossPrice"]["amount"];
+                    $title = strtolower($item["product"]["title"]);
+                    $fees = $price * 0.15;
+                    //"Pack" articles (multiple articles in one listing)
+                    if(strpos($title, 'er pack')){
+                        $strpostitle = substr($title,0,strpos(strtolower($title),"er pack")); //Cut everything after "er Pack"
+                        $lastspace = strrpos($strpostitle, ' '); //Search for last space
+                        if($lastspace > 0){
+                            $strpostitle = substr($strpostitle, $lastspace, strlen($strpostitle)); //Cut everything before last space
+                        }	
+                        $quantity *= intval($strpostitle); //Get "real" quantity
+                        $price = doubleval($price) / doubleval($strpostitle); //Get "real" price
+                        $fees = $fees / doubleval($strpostitle) + 0.01; //Get "real" fees
+                    }
+
                     $csv .= $value["orderNumber"] . ';';
                     $csv .= $value["orderDate"] . ';';
                     $csv .= '' . ';'; //Mail does not exist
                     $csv .= $item["product"]["sku"] . ';';
-                    $csv .= '1' . ';'; //MENGE???
-                    $csv .= $item["itemValueGrossPrice"]["amount"] . ';';
+                    $csv .= $quantity . ';'; //MENGE???
+                    $csv .= $price . ';';
                     $csv .= $value["deliveryAddress"]["firstName"] . " " . $value["deliveryAddress"]["lastName"] . ';';
                     $csv .= $value["deliveryAddress"]["street"] . " " . $value["deliveryAddress"]["houseNumber"] . ';';
                     $csv .= $value["deliveryAddress"]["addition"] . ';';
@@ -98,7 +114,7 @@
                     $csv .= $value["payment"]["paymentMethod"] . ';';
                     $csv .= $value["salesOrderId"] . ';';
                     $csv .= $value["initialDeliveryFees"][0]["deliveryFeeAmount"]["amount"] . ';';
-                    $csv .= '0' . ';'; //TODO Nebenkosten
+                    $csv .= $fees . ';'; //TODO Nebenkosten
                     $csv .= $value["lastModifiedDate"] . ';';
                     $csv .= $item["positionItemId"] . ';' . PHP_EOL;
                 }    
