@@ -326,6 +326,12 @@
         if($csvData[21] != null && $csvData[21] != ""){
             $dangerGood = "Produkt fällt unter die Gefahrgutvorschriften.";
         }
+
+        //Only transfer moin, if it was listed in the csv
+        $moin = "";
+        if($csvData[22] != null && $csvData[22] != ""){
+            $moin = '"moin":"' . $csvData[22] . '",';
+        }
         
         
         //Generate json
@@ -337,8 +343,7 @@
             "isbn":"",
             "upc":"",
             "pzn":"0",
-            "mpn":"' . $csvData[2] . '",
-            "moin":"' . $csvData[22] . '",
+            "mpn":"' . $csvData[2] . '", ' . $moin . '
             "offeringStartDate":"1970-01-01T00:00:00.000Z",
             "releaseDate":"1970-01-01T00:00:00.000Z",
             "productDescription":{
