@@ -78,15 +78,17 @@
                 foreach($value["positionItems"] as &$item){
                     $quantity = 1;
                     $price = $item["itemValueGrossPrice"]["amount"];
-                    $title = strtolower($item["product"]["title"]);
+                    $title = strtolower($item["product"]["productTitle"]);
                     $fees = $price * 0.15;
                     //"Pack" articles (multiple articles in one listing)
                     if(strpos($title, 'er pack')){
-                        $strpostitle = substr($title,0,strpos(strtolower($title),"er pack")); //Cut everything after "er Pack"
+                        $strpostitle = substr($title, 0, strpos(strtolower($title), "er pack")); //Cut everything after "er Pack"
                         $lastspace = strrpos($strpostitle, ' '); //Search for last space
                         if($lastspace > 0){
                             $strpostitle = substr($strpostitle, $lastspace, strlen($strpostitle)); //Cut everything before last space
                         }	
+                        $strpostitle = str_replace("»", "", $strpostitle); //Remove »
+                        $strpostitle = str_replace(" ", "", $strpostitle); //Remove spaces
                         $quantity *= intval($strpostitle); //Get "real" quantity
                         $price = doubleval($price) / doubleval($strpostitle); //Get "real" price
                         $fees = $fees / doubleval($strpostitle) + 0.01; //Get "real" fees
@@ -116,7 +118,8 @@
                     $csv .= $value["initialDeliveryFees"][0]["deliveryFeeAmount"]["amount"] . ';';
                     $csv .= $fees . ';'; //TODO Nebenkosten
                     $csv .= $value["lastModifiedDate"] . ';';
-                    $csv .= $item["positionItemId"] . ';' . PHP_EOL;
+                    $csv .= $item["positionItemId"] . ';';
+                    $csv .= $title . PHP_EOL;
                 }    
             }
 
