@@ -75,7 +75,7 @@
             while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
                 echo $data[0] . ";" . $data[1] . ';' . $data[2] . ';' . $data[3];
 
-                array_push($postfields, generateShipmentJson($data[0], $data[1], $data[2], $data[3]));
+                array_push($postfields, generateShipmentJson($data[0], $data[1], $data[2], $data[3], $data[4]));
             }
             fclose($handle);
         } else {
@@ -91,7 +91,7 @@
 
 
 
-    function generateShipmentJson($carrier, $trackingNumber, $positionItemId, $salesOrderId){
+    function generateShipmentJson($carrier, $trackingNumber, $positionItemId, $salesOrderId, $returnNumber){
         $json = '{
             "trackingKey":{
                 "carrier":"' . $carrier . '",
@@ -108,7 +108,7 @@
                 "salesOrderId":"' . $salesOrderId . '",
                 "returnTrackingKey": {
                     "carrier": "DHL",
-                    "trackingNumber": "' . $trackingNumber . '0"
+                    "trackingNumber": "' . $returnNumber . '0"
                 }
             }]
         }';
