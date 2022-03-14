@@ -1,5 +1,6 @@
 <?php
     require_once 'inc/config.php';
+    require_once 'getDHLRetoure.php';
 
     $target_dir = "uploads/";
     $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
@@ -10,8 +11,6 @@
             echo "Die Datei ". $filename . " wurde hochgeladen!<br><br>";
 
             $postfields = readShipmentsFromCsv($url, $accessToken, $target_file);    
-
-            var_dump($postfields);
 
             $shipments = createNewShipments($url, $accessToken, $postfields);
 
@@ -33,7 +32,6 @@
 
     function createNewShipments($url, $accessToken, $postfields){
         $json = JSONfyPostfields($postfields, "tracking");
-        echo "<br><br><br>JSON: " . $json . "<br><br><br>";
 
         //Remove first and last char
         $json = substr($json, 1);
@@ -77,7 +75,7 @@
         if (($handle = fopen($csvPath, "r")) !== FALSE) {
             fgetcsv($handle); //Skip first line
             while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
-                echo $data[0] . ";" . $data[1] . ';' . $data[2] . ';' . $data[3];
+                echo $data[0] . ";" . $data[1] . ';' . $data[2] . ';' . $data[3]."<br>";
 
                 $json = generateShipmentJson($url, $accessToken, $data[0], $data[1], $data[2], $data[3]);
 
@@ -102,14 +100,9 @@
     function generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $positionItemId, $salesOrderId){
         $orderData = getOrderData($url, $accessToken, $salesOrderId);
 
-        echo "<br>".$orderData["orderNumber"]."<br>";
-
         //Only mark position as ship, if it wasn't shipped already
-        if($orderData["positionItems"][0]["fulfillmentStatus"] !== "SENT"){
-            //The following script takes $orderData and returns a dhl return number ($dhl_return_number)
-            include 'inc/config_dhl.php';
-            include 'getDHLRetoure.php';
-
+        if($orderData["positionItems"][0]["fulfillmentStatus"] !== "SENT"){    
+            include 'inc/config_dhl.php';     
             $dhl_return_number = postDHLRetoure($sandbox, $dhl_base64, $dhl_api_base64, $receiver_id, $orderData);
 
 
