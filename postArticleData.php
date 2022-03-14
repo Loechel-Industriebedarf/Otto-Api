@@ -15,13 +15,13 @@
 
                 //Read csv content
                 $postfields = readDataFromCSV($url, $accessToken, $target_dir . $filename, "products");  
-                uploadProductData($url, $accessToken, $postfields);
+                uploadProductData($url, $accessToken, $postfields, $username, $password);
             }   
             else if(isset($_POST["uploadQuantity"])){
                 echo '<a href="inc/quantityErrors.csv"><button>Error-File in Excel öffnen</button></a><br><br>';
 
                 $postfields = readDataFromCSV($url, $accessToken, $target_dir . $filename, "quantity");  
-                uploadQuantityData($url, $accessToken, $postfields);
+                uploadQuantityData($url, $accessToken, $postfields, $username, $password);
             }       
           } else {
             echo "Fehler beim Upload...";
@@ -94,6 +94,11 @@
         //Start upload
         echo "<h1>Uploadinfo</h1>";
         foreach ($chunkPostfields as &$value) {
+            //Get new token every 25000 requests
+            if($i % 25000){
+                $accessToken = getAccessToken($url, $username, $password);
+            }
+
             echo $i . " - " . getCurrentDateTimeOtto();
             echo "<br>";
             $spResult = uploadProducts($url, $accessToken, $value, 'product_' . $i);
@@ -140,6 +145,11 @@
         //Start upload
         echo "<h1>Uploadinfo</h1>";
         foreach ($chunkPostfields as &$value) {
+            //Get new token every 25000 requests
+            if($i % 25000){
+                $accessToken = getAccessToken($url, $username, $password);
+            }
+            
             echo $i . " - " . getCurrentDateTimeOtto();
             echo "<br>";
             $quantityResult = uploadQuantities($url, $accessToken, $value, 'quantity_' . $i);
