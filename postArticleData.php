@@ -84,7 +84,7 @@
     * @input    Array
     * @return   Array   Decoded json result
     */
-    function uploadProductData($url, $accessToken, $postfields){       
+    function uploadProductData($url, $accessToken, $postfields, $username, $password){       
         //Split in chunks with 500 articles (max per request)
         $chunksize = 500;
         $chunkPostfields = array_chunk($postfields, $chunksize);
@@ -135,7 +135,7 @@
     * @input    Array
     * @return   Array   Decoded json result
     */
-    function uploadQuantityData($url, $accessToken, $postfields){
+    function uploadQuantityData($url, $accessToken, $postfields, $username, $password){
         $chunksize = 200;
         //Split in chunks with 200 articles (max per request)
         $chunkPostfields = array_chunk($postfields, $chunksize);
@@ -149,7 +149,7 @@
             if($i % 25000){
                 $accessToken = getAccessToken($url, $username, $password);
             }
-            
+
             echo $i . " - " . getCurrentDateTimeOtto();
             echo "<br>";
             $quantityResult = uploadQuantities($url, $accessToken, $value, 'quantity_' . $i);
