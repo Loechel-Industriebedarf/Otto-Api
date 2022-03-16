@@ -69,14 +69,14 @@
 
                 //Support for multiple shipments, I guess?
                 //Sets carrier to "OTHER_FORWARDER", if a order number appears multiple times
+                $carrier = $data[0];
+                $trackingNumber = $data[1];
                 if($lastOrder == $data[4]){
                     $carrier = "OTHER_FORWARDER";
-                }
-                else{
-                    $carrier = $data[0];
+                    $trackingNumber .= "0" . count($postfields);
                 }
 
-                $json = generateShipmentJson($url, $accessToken, $carrier, $data[1], $data[2], $data[3]);
+                $json = generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $data[2], $data[3]);
 
                 if($json !== null){
                     array_push($postfields, $json);

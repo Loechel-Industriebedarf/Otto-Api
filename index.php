@@ -54,6 +54,11 @@
     Sku?
     <input type="text" name="sku" id="sku">
     <input type="submit" value="Informationen zu einem Produkt anzeigen" name="submit">
-</form><a href="getSingleProduct.php">
+</form>
+<form action="deactivateProducts.php" method="post" enctype="multipart/form-data">
+    Produkte deaktivieren (500 max!)
+    <input type="file" name="fileToUpload" id="fileToUpload">
+    <input type="submit" value="Produkte deaktivieren" name="submit">
+</form>
 <a href="getOrders.php"><button>Bestellabholung testen</button></a><br><br><br><br><br><br>
 <a href="generateTestOrders.php"><button>Testbestellungen generieren</button></a><br><br>
