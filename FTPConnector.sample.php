@@ -14,7 +14,7 @@
         $login_result = ftp_login($ftp, $ftp_user_name, $ftp_user_pass);
     
         // Datei hochladen
-        if (ftp_put($ftp, $remote_file, $file, FTP_ASCII)) {
+        if (ftp_put($ftp, $remote_file, $file, FTP_BINARY)) {
         echo $file . "uploaded successfully!";
         } else {
         echo "Error while uploading " . $file;
