@@ -70,6 +70,10 @@
       return $xml;
    }
 
+
+
+
+
    function generateRetoureXMLTest($receiver_id){
       $xml = '<?xml version="1.0" encoding="UTF-8"?>
       <ReturnOrder>
@@ -97,12 +101,18 @@
       return $xml;
    }
 
-   function saveShipmentLabel($base64, $fileName){
-      include 'FTPConnector.php';
 
+
+
+
+
+   function saveShipmentLabel($base64, $fileName){
       $data = base64_decode($base64);
       
-      $filePath('pdf/' . $fileName . '.pdf');
+      $filePath = 'pdf/' . $fileName . '.pdf';
+      //Save locally
       file_put_contents($filePath, $data);
+      //Upload to ftp
+      require_once 'FTPConnector.php';
       saveToFTP($filePath);
    }

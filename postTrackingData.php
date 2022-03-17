@@ -107,9 +107,10 @@
 
     function generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $positionItemId, $salesOrderId, $labelNameBase){
         $orderData = getOrderData($url, $accessToken, $salesOrderId);
+        $orderStatus = $orderData["positionItems"][0]["fulfillmentStatus"];
 
-        //Only mark position as ship, if it wasn't shipped already
-        if($orderData["positionItems"][0]["fulfillmentStatus"] !== "SENT"){    
+        //Only mark position as ship, if it wasn't shipped/returned already
+        if($orderStatus == "PROCESSABLE"){    
             include 'inc/config_dhl.php';     
             $dhl_return_number = postDHLRetoure($sandbox, $dhl_base64, $dhl_api_base64, $receiver_id, $orderData, date('Y-m-d') . '_' . $labelNameBase);
 

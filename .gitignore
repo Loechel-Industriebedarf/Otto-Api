@@ -13,3 +13,4 @@ inc/brands.json
 inc/restricted.csv
 inc/config_dhl.php
 FTPConnector.php
+pdf/
