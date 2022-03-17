@@ -87,8 +87,7 @@
                         if($lastspace > 0){
                             $strpostitle = substr($strpostitle, $lastspace, strlen($strpostitle)); //Cut everything before last space
                         }	
-                        $strpostitle = str_replace("»", "", $strpostitle); //Remove »
-                        $strpostitle = str_replace(" ", "", $strpostitle); //Remove spaces
+                        $strpostitle = preg_replace("/[^0-9]/", "", $strpostitle); //Remove every non number
                         $quantity *= intval($strpostitle); //Get "real" quantity
                         $price = doubleval($price) / doubleval($strpostitle); //Get "real" price
                         $fees = $fees / doubleval($strpostitle) + 0.01; //Get "real" fees
