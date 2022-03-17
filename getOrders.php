@@ -18,10 +18,10 @@
 
         //Write orders and last date to file. Display error message, if there are no new orders
         if($csv == null){
-            echo "No new orders...";
+            logMe(getCurrentDateTimeOtto() . " No new orders...");
         }
         else{
-            echo $csv;
+            logMe(getCurrentDateTimeOtto() . PHP_EOL . $csv);
 
             writeToCsv($csvPathOrders, $csv);
         }

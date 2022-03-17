@@ -56,7 +56,7 @@
 
     /*
     * Format:
-    * Carrier [0]; TrackingNumber[1]; PositionItemId [2]; SalesOrderId[3]; OrderId[4]
+    * Carrier [0]; TrackingNumber[1]; PositionItemId [2]; SalesOrderId[3]; OrderId[4]; OwnOrderId[5]
     */
     function readShipmentsFromCsv($url, $accessToken, $csvPath){
         $lastOrder = "";
@@ -76,7 +76,7 @@
                     $trackingNumber .= "0" . count($postfields);
                 }
 
-                $json = generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $data[2], $data[3]);
+                $json = generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $data[2], $data[3], $data[5]. '_' . $data[4]);
 
                 if($json !== null){
                     array_push($postfields, $json);
@@ -105,13 +105,13 @@
 
 
 
-    function generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $positionItemId, $salesOrderId){
+    function generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $positionItemId, $salesOrderId, $labelNameBase){
         $orderData = getOrderData($url, $accessToken, $salesOrderId);
 
         //Only mark position as ship, if it wasn't shipped already
         if($orderData["positionItems"][0]["fulfillmentStatus"] !== "SENT"){    
             include 'inc/config_dhl.php';     
-            $dhl_return_number = postDHLRetoure($sandbox, $dhl_base64, $dhl_api_base64, $receiver_id, $orderData);
+            $dhl_return_number = postDHLRetoure($sandbox, $dhl_base64, $dhl_api_base64, $receiver_id, $orderData, date('Y-m-d') . '_' . $labelNameBase);
 
 
             $json = '{
