@@ -65,18 +65,21 @@
         if (($handle = fopen($csvPath, "r")) !== FALSE) {
             fgetcsv($handle); //Skip first line
             while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
-                echo $data[0] . ";" . $data[1] . ';' . $data[2] . ';' . $data[3] . ";" . $data[4] . "<br>";
+                echo $data[0] . ";" . $data[1] . ';' . $data[2] . ';' . $data[3] . ";" . $data[4] . ";" . $data[5] . "<br>";
 
                 //Support for multiple shipments, I guess?
                 //Sets carrier to "OTHER_FORWARDER", if a order number appears multiple times
+                $ignoreStatus = false;
                 $carrier = $data[0];
                 $trackingNumber = $data[1];
                 if($lastOrder == $data[4]){
                     $carrier = "OTHER_FORWARDER";
                     $trackingNumber .= "0" . count($postfields);
+
+                    $ignoreStatus = true;
                 }
 
-                $json = generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $data[2], $data[3], $data[5]. '_' . $data[4]);
+                $json = generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $data[2], $data[3], $data[5] . '_' . $data[4], $ignoreStatus);
 
                 if($json !== null){
                     array_push($postfields, $json);
@@ -105,12 +108,12 @@
 
 
 
-    function generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $positionItemId, $salesOrderId, $labelNameBase){
+    function generateShipmentJson($url, $accessToken, $carrier, $trackingNumber, $positionItemId, $salesOrderId, $labelNameBase, $ignoreStatus){
         $orderData = getOrderData($url, $accessToken, $salesOrderId);
         $orderStatus = $orderData["positionItems"][0]["fulfillmentStatus"];
 
         //Only mark position as ship, if it wasn't shipped/returned already
-        if($orderStatus == "PROCESSABLE"){    
+        if($orderStatus == "PROCESSABLE" || $ignoreStatus){    
             include 'inc/config_dhl.php';     
             $dhl_return_number = postDHLRetoure($sandbox, $dhl_base64, $dhl_api_base64, $receiver_id, $orderData, date('Y-m-d') . '_' . $labelNameBase);
 

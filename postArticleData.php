@@ -317,7 +317,7 @@
 
         $vpeString = "";
         //Support for multiple units in one package
-        if($csvData[13] != null && $csvData[13] != ""){
+        if($csvData[13] != null && $csvData[13] != ""  && $csvData[13] != "1"){
             $vpeString = $csvData[13]. 'er Pack ';
         }
 
