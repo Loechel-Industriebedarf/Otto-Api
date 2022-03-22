@@ -90,9 +90,14 @@
                     }
 
                     logMe($shipments);
+
+                    $lastOrder = $data[4];
                 } 
+                else{
+                    $lastOrder = "";
+                }
                 
-                $lastOrder = $data[4];
+                
             }
             fclose($handle);
         } else {
