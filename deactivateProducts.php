@@ -55,7 +55,7 @@
 
         $headers = array();
         $headers[] = 'Authorization: Bearer ' . $accessToken;
-        $headers[] = 'X-Request-Timestamp: ' . str_replace('0100', '01:00', getCurrentDateTimeOtto());
+        $headers[] = 'X-Request-Timestamp: ' . getCurrentDateTimeOttoReplaced();
         $headers[] = 'Content-Type: application/json';
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 

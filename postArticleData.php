@@ -331,11 +331,21 @@
         //Remove last 2 chars from bulletpoints
         $bulletpoints = substr_replace($bulletpoints, "", -2);
 
-        //Is the product dangerous?
-        $dangerGood = "Produkt fällt nicht unter die Gefahrgutvorschriften.";
-        if($csvData[21] != null && $csvData[21] != ""){
-            $dangerGood = "Produkt fällt unter die Gefahrgutvorschriften.";
+        $attributes = "";
+        //Set attributes, if Werkzeugset
+        if($csvData[11] == "Werkzeugset"){
+            //Is the product dangerous?
+            $dangerGood = "Produkt fällt nicht unter die Gefahrgutvorschriften.";
+            if($csvData[21] != null && $csvData[21] != ""){
+                $dangerGood = "Produkt fällt unter die Gefahrgutvorschriften.";
+            }
+            $attributes = ',
+            "attributes":[{
+                "name":"Relevanz Gefahrgut",
+                "values":["' . $dangerGood . '"]
+            }]';
         }
+        
 
         //Only transfer moin, if it was listed in the csv
         $moin = "";
@@ -372,11 +382,7 @@
                     "' . $csvData[12] . '", 
                     "' . $vpeString . '",
                     "' . $bulletpoints . '"
-                ],
-                "attributes":[{
-                    "name":"Relevanz Gefahrgut",
-                    "values":["' . $dangerGood . '"]
-                }]
+                ]' . $attributes . '
             },
             "mediaAssets":[{
                 "type":"IMAGE",

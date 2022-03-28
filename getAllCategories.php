@@ -2,16 +2,37 @@
     require_once 'inc/config.php';
 
     echo "<h1>Categories</h1>";
-    $categoriesList = array();
+    $categoriesList = "Kategoriename;Pflichtattribut" . PHP_EOL;
     for ($i = 0; $i < 100; $i++){
-        array_push($categoriesList, readProductCategories($url, $accessToken, $i));
+        $categories = readProductCategories($url, $accessToken, $i);
+
+        foreach($categories["categoryGroups"] as &$value){
+            //Read the category list
+            if(is_array($value["categories"])){
+                foreach($value["categories"] as &$singleCategory){
+                    $categoriesList .= $singleCategory;
+                    $categoriesList .= getAttributesFromArray($value);
+                    $categoriesList .= "" . PHP_EOL;
+                }
+            }
+            else{
+                $categoriesList .= $value["categories"];
+                $categoriesList .= getAttributesFromArray($value);
+                $categoriesList .= "" . PHP_EOL;
+            }   
+        }
+
+        LogMe($categories);
+
         //Wait 100ms
         usleep(100000);
     }
 
+    $categoriesListEncoded = iconv( mb_detect_encoding( $categoriesList ), 'Windows-1252//TRANSLIT', $categoriesList );
+
     //Write categories to file
-    $fp = fopen('inc/categories.json', 'w');
-    fwrite($fp, serialize($categoriesList));
+    $fp = fopen('inc/categories.csv', 'w');
+    fwrite($fp, $categoriesListEncoded);
     fclose($fp);
 
     echo "<pre>";
@@ -41,4 +62,29 @@
         curl_close($ch);
 
         return json_decode($result, true);
+    }
+
+
+
+    function getAttributesFromArray($value){
+        $features = "";
+        //Check if the category has attributes, that must be filled
+        if(is_array($value["attributes"])){
+            foreach($value["attributes"] as &$attributes){
+                if(is_array($attributes["featureRelevance"])){
+                    foreach($attributes["featureRelevance"] as &$feature){
+                        if($feature == "LEGAL"){
+                            $features .= ';' . $attributes["name"];
+                        }
+                    }
+                }
+                else{
+                    if($feature == "LEGAL"){
+                        $features .= ';' . $attributes["name"];
+                    }
+                }
+            }
+        }
+
+        return $features;
     }
