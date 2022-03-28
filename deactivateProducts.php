@@ -12,8 +12,12 @@
             echo "Die Datei ". $filename . " wurde hochgeladen!<br><br>";
 
             $products = readProductsFromCsv($target_file);
-            $result = deactivateProducts($url, $accessToken, $products);
-            logMe($result);
+            //Only 500 products per api request
+            $prod = array_chunk($products, 500);
+            foreach($prod as &$value){
+                $result = deactivateProducts($url, $accessToken, $value);
+                logMe($result);
+            }
           } else {
             echo "Fehler beim Upload...";
           }

@@ -56,7 +56,7 @@
     <input type="submit" value="Informationen zu einem Produkt anzeigen" name="submit">
 </form>
 <form action="deactivateProducts.php" method="post" enctype="multipart/form-data">
-    Produkte deaktivieren (500 max!)
+    Produkte deaktivieren
     <input type="file" name="fileToUpload" id="fileToUpload">
     <input type="submit" value="Produkte deaktivieren" name="submit">
 </form>
