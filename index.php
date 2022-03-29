@@ -60,5 +60,12 @@
     <input type="file" name="fileToUpload" id="fileToUpload">
     <input type="submit" value="Produkte deaktivieren" name="submit">
 </form>
+<form action="deactivateProducts.php" method="post" enctype="multipart/form-data">
+    Produkte aktivieren
+    <input type="hidden" name="activate" id="activate">
+    <input type="file" name="fileToUpload" id="fileToUpload">
+    <input type="submit" value="Produkte aktivieren" name="submit">
+</form>
+<a href="categoryWizard.php"><button>Category Wizard</button></a><br><br>
 <a href="getOrders.php"><button>Bestellabholung testen</button></a><br><br><br><br><br><br>
 <a href="generateTestOrders.php"><button>Testbestellungen generieren</button></a><br><br>

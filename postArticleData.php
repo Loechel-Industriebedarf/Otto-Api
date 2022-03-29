@@ -523,6 +523,9 @@
             case "RL":
                 $baseUnit = "Stk";
                 break;
+            case "RL":
+                $baseUnit = "Stk";
+                break;
             default:
                 $baseUnit = $unitOriginal;
         }

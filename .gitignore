@@ -15,3 +15,5 @@ inc/config_dhl.php
 FTPConnector.php
 pdf/
 *.lnk
+inc/categoryWizard.csv
+inc/texts.csv
