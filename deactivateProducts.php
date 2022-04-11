@@ -78,7 +78,7 @@
         $json = '{"status": [';
 
         foreach($products as &$value){
-            $json .= '{"sku": "' . $value . '","active": ' . $status . '},';
+            $json .= '{"sku": "' . $value . '","active": ' . var_export($status, true) . '},';
         }
 
         //Remove last comma from json

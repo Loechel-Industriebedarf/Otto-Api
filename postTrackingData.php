@@ -59,6 +59,7 @@
             logMe($shipments);
 
             if(isset($shipments["errors"])){
+                echo "ERROR: (json log)";
                 logMe($json);
             }
 
