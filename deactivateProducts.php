@@ -11,20 +11,29 @@
             $filename = htmlspecialchars(basename( $_FILES["fileToUpload"]["name"]));
             echo "Die Datei ". $filename . " wurde hochgeladen!<br><br>";
 
+            echo '<a href="getUploadStatus.php"><button>Uploadstatus prüfen</button></a>';
+
             $products = readProductsFromCsv($target_file);
             //Only 500 products per api request
             $prod = array_chunk($products, 500);
+            $uploadIds = "";
             foreach($prod as &$value){
                 //If sent via "activate products" activate instead of deactivate
                 if(isset($_POST["activate"])){
                     $result = deactivateProducts($url, $accessToken, $value, true);
                 }
-                $result = deactivateProducts($url, $accessToken, $value, false);
+                else{
+                    $result = deactivateProducts($url, $accessToken, $value, false);
+                }
                 logMe($result);
+                $uploadIds .= $result["links"][0]["href"] . "\r\n";
             }
-          } else {
+        } else {
             echo "Fehler beim Upload...";
-          }
+        }
+            $file = 'inc/uploadId.txt';
+            //Write upload id to file
+            file_put_contents($file, $uploadIds);
     }
 
     
