@@ -83,12 +83,12 @@
 
         if (($handle = fopen($csvPath, "r")) !== FALSE) {
             fgetcsv($handle); //Skip first line
-            $data = fgetcsv($handle, 0, ";"); //Read second line
+            //$data = fgetcsv($handle, 0, ";");
             while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
                 //Support for multiple shipments, I guess?
                 //If a order number occurs multiple times, add to shipment instead of creating a new one
                 $addToShipment = false;
-                $carrier = $data[0];
+                $carrier = strtoupper($data[0]);
                 $trackingNumber = $data[1];
                 //If 2 or more positions are in the same order, don't mark the parcel as shipped yet, just add it to the json string
                 if($lastOrder == $data[4]){

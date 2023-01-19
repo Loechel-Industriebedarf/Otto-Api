@@ -330,6 +330,8 @@
         }
         //Remove last 2 chars from bulletpoints
         $bulletpoints = substr_replace($bulletpoints, "", -2);
+		//Replace " with ''
+		$bulletpoints = str_replace('"', "''", $bulletpoints);
 
         $attributes = "";
         //Set attributes, if Werkzeugset
