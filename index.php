@@ -22,6 +22,7 @@
 
 <a href="getUploadStatus.php"><button>Uploadstatus prüfen</button></a><br><br>
 <a href="inc/productErrors.csv"><button>Error-File in Excel öffnen (ZUERST "Uploadstatus prüfen")</button></a><br><br>
+<a href="inc/productInformation.csv"><button>Info-File in Excel öffnen (Erst klicken, wenn Seite aufgehört hat zu "arbeiten"!)</button></a><br><br>
 
 <br><br>
 <br><br>

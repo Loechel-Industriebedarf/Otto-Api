@@ -46,19 +46,28 @@
     * @return   Array   Decoded json result
     */
     function readDataFromCSV($url, $accessToken, $filepath, $identifier){
+		$brands_json = file_get_contents('inc/brands.json');
+		$brands = json_decode($brands_json);
+		
+		$weeCategories = explode("\n", file_get_contents('inc/weeeCategories.csv'));
+		
         $csv = file_get_contents($filepath);
         
         $postfields = array();
 
         if (($handle = fopen($filepath, "r")) !== FALSE) {
             fgetcsv($handle); //Skip first line
+			$i = 0; // Count lines
             while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
                 if($identifier === "products"){
-                    array_push($postfields, getProductJsonFromCSVData($data));
+                    array_push($postfields, getProductJsonFromCSVData($data, $brands, $weeCategories));
                 }
                 else if($identifier === "quantity"){
                     array_push($postfields, getQuantityJsonFromCSVData($data));
                 }
+				
+				$i++;
+				if($i % 1000 === 0){ LogMe("readDataFromCSV " . $i); }
             }
             fclose($handle);
         } else {
@@ -95,7 +104,7 @@
         echo "<h1>Uploadinfo</h1>";
         foreach ($chunkPostfields as &$value) {
             //Get new token every 25000 requests
-            if($i % 25000){
+            if($i % 25000 || $i == 0){
                 $accessToken = getAccessToken($url, $username, $password);
             }
 
@@ -106,6 +115,8 @@
             $uploadIds .= $spResult["links"][0]["href"] . "\r\n";
 
             $i += $chunksize;
+			
+			LogMe("uploadProductData " . $i);
 
             //Wait 100ms
             //usleep(100000);
@@ -163,6 +174,8 @@
             
 
             $i += $chunksize;
+			
+			LogMe("uploadQuantityData " . $i);
 
             //Wait 100ms
             //usleep(100000);
@@ -295,12 +308,14 @@
     * Beschreibung [5];Bilddateiname [6];Lieferzeit [7];Preis [8];Grundeinheit [9];
     * Grundmenge [10];Kategorie [11];Marke Original [12]; VPE [13]; Farbe [14];
     * Größe [15]; Norm [16]; Material [17]; Produktart [18]; Ausführung [19];
-    * Zertifikat [20]; Gefahrgut [21]; MOIN [22]
+    * Zertifikat [20]; Gefahrgut [21]; MOIN [22]; WEEE-Number [23]
     *
     * @input    String  Csv line in the correct format (generated via fgetcsv)
+    * @input    String  Array with all the available brands
+    * @input    String  Array with all categories that require a weee number
     * @return   String  Json string for product data uploads
     */
-    function getProductJsonFromCSVData($csvData){
+    function getProductJsonFromCSVData($csvData, $brands, $weeeCategories){		
         $baseUnitJson = '';
         $baseUnit = getOttoBaseUnit($csvData[9]);
 
@@ -347,6 +362,37 @@
                 "values":["' . $dangerGood . '"]
             }]';
         }
+		//Add attributes for weee number if a weee number is listed in the csv
+		else {
+			//Check categories
+			foreach($weeeCategories as $weeeCategory){				
+				//Category found
+				if(trim(strtolower($weeeCategory)) == trim(strtolower($csvData[11]))){
+					//Check if a weee number is listed
+					if($csvData[23] != null || $csvData[23] != ""){
+						$attributes = ',
+						"attributes":[{
+							"name":"Geräteart laut ElektroG",
+							"values":["Kleingeräte, die in privaten Haushalten genutzt werden können."]
+						},
+						{
+							"name":"WEEE-Reg.-Nr. DE",
+							"values":["' . preg_replace('/\D/', '', $csvData[23]) . '"]
+						}]'; //Removes the DE from the weee number
+					}
+					else{
+						$attributes = ',
+						"attributes":[{
+							"name":"Geräteart laut ElektroG",
+							"values":["Produkt fällt nicht unter das ElektroG."]
+						}]';
+					}
+					break;
+				}
+			}
+		}
+		
+		
         
 
         //Only transfer moin, if it was listed in the csv
@@ -354,23 +400,20 @@
         if($csvData[22] != null && $csvData[22] != ""){
             $moin = '"moin":"' . $csvData[22] . '",';
         }
-		
-		
-		
-		$brands_json = file_get_contents('inc/brands.json');
 
-		$brands = json_decode($brands_json);
 		
 		//"ohne Marke"
-		$productBrandId = "KPWTEKFE";
+		$productBrandId = "00000000";
 		
 		//Search for BrandId
 		foreach($brands as $brand){		
-			if($brand->name === $csvData[3]){
+			if(strtolower($brand->name) === strtolower($csvData[3])){
 				$productBrandId = $brand->id;
 				break;
 			}
 		}		
+		
+		//logMe($csvData[0] . " - " . strtolower($csvData[3]) . " - " . $productBrandId);
         
         //Generate json
         $json = 
@@ -384,7 +427,7 @@
             "productDescription":{
                 "category":"' . $csvData[11] . '",
                 "brandId":"' . $productBrandId . '",
-                "productLine":"' . substr($myStr, $vpeString . $csvData[4], 0, 70) . '",
+                "productLine":"' . substr($vpeString . $csvData[4], 0, 70) . '",
                 "manufacturer":"' . $csvData[12] . '",
                 "productionDate":"1970-01-01T00:00:00.000Z",
                 "multiPack":false,

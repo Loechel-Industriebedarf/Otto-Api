@@ -1,11 +1,13 @@
 <a href="inc/productErrors.csv"><button>Error-File in Excel öffnen (Erst klicken, wenn Seite aufgehört hat zu "arbeiten"!)</button></a><br><br>
+<a href="inc/productInformation.csv"><button>Info-File in Excel öffnen (Erst klicken, wenn Seite aufgehört hat zu "arbeiten"!)</button></a><br><br>
 
 <?php
     require_once 'inc/config.php';
 
     $filepath = 'inc/uploadId.txt';
 
-    $csv = "";
+    $csv = array("", "");
+	
     echo "<h1>Uploadstatus</h1>";
     //Read upload ids from file
     $handle = fopen($filepath, "r");
@@ -16,49 +18,46 @@
             echo "<h2>Update task</h2>";
             $utaskResult = getUpdateTasks($url, $accessToken, $line);
             echo $utaskResult["state"] . " - " . $utaskResult["message"] . "<br>";
-            /*
-            echo "<pre>";
-            var_dump($utaskResult);
-            echo "</pre>";
-            */
+			
+			
+
+
+			
+			// FAILED
 
             $utaskResult = getUpdateTasks($url, $accessToken, $line . '/failed');
-            /*
-            echo "<pre>";
-            var_dump($utaskResult);
-            echo "</pre>";
-            */
-            foreach($utaskResult["results"] as &$value){
-                if(isset($value["errors"])){
-                    $csv .= $value["variation"] . ';' .  $value["errors"][0]["code"] . ';' .  $value["errors"][0]["title"] . ';' .  $value["errors"][0]["jsonPath"] . PHP_EOL;
-                }  
-            }
-            
+			
+			$csv = logUpdateTasks("Failed", $csv, $utaskResult);
+			
+			
+			
+			
+			
+            // SUCCEEDED
+
             $utaskResult = getUpdateTasks($url, $accessToken, $line . '/succeeded');
-            /*
-            echo "<pre>";
-            var_dump($utaskResult);
-            echo "</pre>";
-            */
+			
+			$csv = logUpdateTasks("Succeeded", $csv, $utaskResult);
+			
+			
+			
+			// UNCHANGED
 
             $utaskResult = getUpdateTasks($url, $accessToken, $line . '/unchanged');
-            /*
-            echo "<pre>";
-            var_dump($utaskResult);
-            echo "</pre>";
-            */
-            foreach($utaskResult["results"] as &$value){
-                if(isset($value["errors"])){
-                    $csv .= $value["variation"] . ';' .  $value["errors"][0]["code"] . ';' .  $value["errors"][0]["title"] . ';' .  $value["errors"][0]["jsonPath"] . PHP_EOL;
-                }
-            }
+			
+			$csv = logUpdateTasks("Unchanged", $csv, $utaskResult);
 
-            echo "<br><br>" . nl2br($csv);
+            
         }
-        $csv = "Variation;Error Code;Error Title;JSon Path" . PHP_EOL . $csv;
-        $file = 'inc/productErrors.csv';
+		$csv[0] = "Status;Variation" . PHP_EOL . $csv[0];
+        $csv[1] = "Variation;Error Code;Error Title;JSon Path" . PHP_EOL . $csv[1];
+        
+		$file = 'inc/productInformation.csv';
+        $fileError = 'inc/productErrors.csv';
+        
         //Write upload id to file
-        file_put_contents($file, $csv);
+		file_put_contents($file, $csv[0]);
+        file_put_contents($fileError, $csv[1]);  
 
         fclose($handle);
     } else {
@@ -94,3 +93,23 @@
 
         return json_decode($result, true);
     }
+	
+	
+	
+	
+	
+	function logUpdateTasks($type, $csv, $utaskResult){		
+		foreach($utaskResult["results"] as &$value){
+			$csv[0] .= $type . ";" . $value["variation"] . PHP_EOL;
+			
+			if(isset($value["errors"])){
+				$csvString .= $value["variation"] . ';' .  $value["errors"][0]["code"] . ';' .  $value["errors"][0]["title"] . ';' .  $value["errors"][0]["jsonPath"] . PHP_EOL;
+				
+				$csv[1] .= $csvString;
+				
+				echo "<br><br>" . nl2br($csvString);
+			}  
+        }
+
+		return $csv;
+	}
