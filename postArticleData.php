@@ -155,7 +155,7 @@
         $csv = 0;
         //Start upload
         echo "<h1>Uploadinfo</h1>";
-        foreach ($chunkPostfields as &$value) {
+        foreach ($chunkPostfields as &$value) {			
             //Get new token every 25000 requests
             if($i % 25000){
                 $accessToken = getAccessToken($url, $username, $password);
@@ -175,10 +175,10 @@
 
             $i += $chunksize;
 			
-			LogMe("uploadQuantityData " . $i);
+			LogMe("uploadQuantityData " . $i . " - " . var_dump($quantityResult));
 
             //Wait 100ms
-            //usleep(100000);
+            usleep(100000);
         }	
 
         $csv = 'Logref;Title;Detail' . PHP_EOL . $csv;
@@ -496,7 +496,7 @@
     function getQuantityJsonFromCSVData($csvData){
         $json = '
             {
-                "lastModified": "' . getCurrentDateTimeOtto() . '",
+                "lastModified": "' . getDateTimeOttoOneHourAgo() . '",
                 "quantity": ' . $csvData[1] . ',
                 "sku": "' . $csvData[0] . '"
             }

@@ -103,7 +103,7 @@
 			$csv[0] .= $type . ";" . $value["variation"] . PHP_EOL;
 			
 			if(isset($value["errors"])){
-				$csvString .= $value["variation"] . ';' .  $value["errors"][0]["code"] . ';' .  $value["errors"][0]["title"] . ';' .  $value["errors"][0]["jsonPath"] . PHP_EOL;
+				$csvString = $value["variation"] . ';' .  $value["errors"][0]["code"] . ';' .  $value["errors"][0]["title"] . ';' .  $value["errors"][0]["jsonPath"] . PHP_EOL;
 				
 				$csv[1] .= $csvString;
 				
